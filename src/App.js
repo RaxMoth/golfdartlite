@@ -1,9 +1,35 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import "./App.css";
 import DartBoardTracker from "./DartboardTracker";
 import TEXT from "./text.js";
+import YouTube from "react-youtube";
 
 function App() {
+    const playerRef = useRef(null);
+
+    const handlePlayAudioSegment = () => {
+        if (playerRef.current) {
+            const player = playerRef.current.internalPlayer;
+            player.seekTo(12, true);
+            player.playVideo();
+            setTimeout(() => {
+                player.pauseVideo();
+            }, (20 - 12) * 1000);
+        }
+    };
+
+    const opts = {
+        height: "0", // Hides the visual player
+        width: "0",
+        playerVars: {
+            autoplay: 0,
+            controls: 0,
+            rel: 0,
+            modestbranding: 1,
+            showinfo: 0,
+        },
+    };
+
     const [players, setPlayers] = useState([
         { id: 1, name: TEXT.NAMES.LÖRRES },
         { id: 2, name: TEXT.NAMES.MAX },
@@ -47,6 +73,32 @@ function App() {
                     {isSidebarVisible ? "Hide Sidebar" : "Show Sidebar"}
                 </button>
                 {TEXT.HEADER_TITLE}
+                <div className="relative">
+                    <div>
+                        <YouTube
+                            videoId="yp-3HWjBMBA" // Replace with your YouTube video ID
+                            opts={{
+                                height: "0",
+                                width: "0",
+                                playerVars: {
+                                    autoplay: 0,
+                                    controls: 0,
+                                    rel: 0,
+                                    modestbranding: 1,
+                                },
+                            }}
+                            ref={playerRef}
+                        />
+                    </div>
+                    {isSidebarVisible && (
+                        <button
+                            onClick={handlePlayAudioSegment}
+                            className="absolute mt-4 px-4 py-2 bg-blue-500  top-4 right-4 border text-white rounded-lg hover:bg-blue-400 focus:ring-2 focus:ring-blue-300"
+                        >
+                            Play Audio
+                        </button>
+                    )}
+                </div>
             </header>
 
             {/* Flex container for sidebar + main content */}
